@@ -7,11 +7,11 @@
   
   
   
-  <title>Hexo</title>
+  <title>Dockerfile定制镜像 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="Dockerfile用build定制镜像时多出来的镜像 写作时间:2020年8月4日   问题描述：在dockerhub中找到continuumio&#x2F;anaconda3镜像的Dockerfile，本地build该Dockerfile后，发现本地镜像中不止会有anaconda3的镜像，还有很多none镜像，包括一个基础镜像。但是如果用docker pull continuumio&#x2F;anaconda3">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hexo">
+<meta property="og:title" content="Dockerfile定制镜像">
 <meta property="og:url" content="http://yoursite.com/1970/01/01/Dockerfile%E7%94%A8build%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F%E6%97%B6%E5%A4%9A%E5%87%BA%E6%9D%A5%E7%9A%84%E9%95%9C%E5%83%8F/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="Dockerfile用build定制镜像时多出来的镜像 写作时间:2020年8月4日   问题描述：在dockerhub中找到continuumio&#x2F;anaconda3镜像的Dockerfile，本地build该Dockerfile后，发现本地镜像中不止会有anaconda3的镜像，还有很多none镜像，包括一个基础镜像。但是如果用docker pull continuumio&#x2F;anaconda3">
@@ -26,8 +26,9 @@
 <meta property="og:image" content="http://yoursite.com/1970/01/01/Dockerfile%E7%94%A8build%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F%E6%97%B6%E5%A4%9A%E5%87%BA%E6%9D%A5%E7%9A%84%E9%95%9C%E5%83%8F/8.png">
 <meta property="og:image" content="http://yoursite.com/1970/01/01/Dockerfile%E7%94%A8build%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F%E6%97%B6%E5%A4%9A%E5%87%BA%E6%9D%A5%E7%9A%84%E9%95%9C%E5%83%8F/10.png">
 <meta property="article:published_time" content="1970-01-01T00:00:00.000Z">
-<meta property="article:modified_time" content="2020-08-13T02:04:17.236Z">
+<meta property="article:modified_time" content="2020-08-13T02:13:22.699Z">
 <meta property="article:author" content="John Doe">
+<meta property="article:tag" content="docker">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://yoursite.com/1970/01/01/Dockerfile%E7%94%A8build%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F%E6%97%B6%E5%A4%9A%E5%87%BA%E6%9D%A5%E7%9A%84%E9%95%9C%E5%83%8F/1.png">
   
@@ -209,7 +210,7 @@
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        
+                        <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/ubuntu/" style="font-size: 10px;">ubuntu</a>
                     </div>
                 </section>
                 
@@ -299,6 +300,29 @@
     
       <input type="hidden" class="isFancy" />
     
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Dockerfile定制镜像
+    </h1>
+  
+
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/" rel="tag">docker</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
     
     <div class="article-entry" itemprop="articleBody">
       
@@ -441,7 +465,7 @@
 <p><strong>猜测</strong>，可能push和pull过程中行头出现的ID并不是镜像的ID，而是其他什么ID。docker在push时，会自动将目标镜像所依赖的底层文件打包进仓库，而在pull时，又会自动释放这些底层文件。</p>
 </li>
 </ol>
-<p><strong>针对本文提出的认识，若有思考错误之处，恳请网友指正；若对遗留问题有所见解，欢迎与我交流，谢谢。联系方式:<a href="mailto:&#x6d;&#x6f;&#x6e;&#107;&#x65;&#x79;&#116;&#x61;&#111;&#64;&#102;&#111;&#120;&#x6d;&#97;&#105;&#x6c;&#x2e;&#99;&#x6f;&#109;">&#x6d;&#x6f;&#x6e;&#107;&#x65;&#x79;&#116;&#x61;&#111;&#64;&#102;&#111;&#120;&#x6d;&#97;&#105;&#x6c;&#x2e;&#99;&#x6f;&#109;</a></strong></p>
+<p><strong>针对本文提出的认识，若有思考错误之处，恳请网友指正；若对遗留问题有所见解，欢迎与我交流，谢谢。联系方式:<a href="mailto:&#109;&#111;&#110;&#x6b;&#x65;&#x79;&#116;&#x61;&#x6f;&#64;&#x66;&#111;&#120;&#x6d;&#x61;&#x69;&#108;&#x2e;&#x63;&#x6f;&#x6d;">&#109;&#111;&#110;&#x6b;&#x65;&#x79;&#116;&#x61;&#x6f;&#64;&#x66;&#111;&#120;&#x6d;&#x61;&#x69;&#108;&#x2e;&#x63;&#x6f;&#x6d;</a></strong></p>
 
       
     </div>
@@ -450,12 +474,12 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a  href="/1970/01/01/Dockerfile%E7%94%A8build%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F%E6%97%B6%E5%A4%9A%E5%87%BA%E6%9D%A5%E7%9A%84%E9%95%9C%E5%83%8F/"></a></p>
+        <p><span>本文标题:</span><a  href="/1970/01/01/Dockerfile%E7%94%A8build%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F%E6%97%B6%E5%A4%9A%E5%87%BA%E6%9D%A5%E7%9A%84%E9%95%9C%E5%83%8F/">Dockerfile定制镜像</a></p>
         <p><span>文章作者:</span><a  href="/" title="访问  的个人博客"></a></p>
         <p><span>发布时间:</span>1970年01月01日 - 08时00分</p>
-        <p><span>最后更新:</span>2020年08月13日 - 10时04分</p>
+        <p><span>最后更新:</span>2020年08月13日 - 10时13分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/1970/01/01/Dockerfile%E7%94%A8build%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F%E6%97%B6%E5%A4%9A%E5%87%BA%E6%9D%A5%E7%9A%84%E9%95%9C%E5%83%8F/" title="">http://yoursite.com/1970/01/01/Dockerfile%E7%94%A8build%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F%E6%97%B6%E5%A4%9A%E5%87%BA%E6%9D%A5%E7%9A%84%E9%95%9C%E5%83%8F/</a>
+            <span>原始链接:</span><a class="post-url" href="/1970/01/01/Dockerfile%E7%94%A8build%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F%E6%97%B6%E5%A4%9A%E5%87%BA%E6%9D%A5%E7%9A%84%E9%95%9C%E5%83%8F/" title="Dockerfile定制镜像">http://yoursite.com/1970/01/01/Dockerfile%E7%94%A8build%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F%E6%97%B6%E5%A4%9A%E5%87%BA%E6%9D%A5%E7%9A%84%E9%95%9C%E5%83%8F/</a>
             <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/1970/01/01/Dockerfile%E7%94%A8build%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F%E6%97%B6%E5%A4%9A%E5%87%BA%E6%9D%A5%E7%9A%84%E9%95%9C%E5%83%8F/　　作者: " title=""></span>
         </p>
         <p>
@@ -469,7 +493,7 @@
   
   
     <a  href="/1970/01/01/Ubuntu%E7%B3%BB%E7%BB%9F%E8%BF%81%E7%A7%BB/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title"></div>
+      <div class="article-nav-title">ubuntu系统迁移</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -558,12 +582,12 @@
         
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
         
-            <a  href="/1970/01/01/Ubuntu%E7%B3%BB%E7%BB%9F%E8%BF%81%E7%A7%BB/" title="下一篇: ">
+            <a  href="/1970/01/01/Ubuntu%E7%B3%BB%E7%BB%9F%E8%BF%81%E7%A7%BB/" title="下一篇: ubuntu系统迁移">
                 <i class="fa fa-angle-right"></i>
             </a>
         
     </div>
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/1970/01/01/Dockerfile%E7%94%A8build%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F%E6%97%B6%E5%A4%9A%E5%87%BA%E6%9D%A5%E7%9A%84%E9%95%9C%E5%83%8F/">Dockerfile用build定制镜像时多出来的镜像</a></li><li class="post-list-item"><a class="post-list-link" href="/1970/01/01/Ubuntu%E7%B3%BB%E7%BB%9F%E8%BF%81%E7%A7%BB/">Ubuntu系统迁移</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/1970/01/01/Dockerfile%E7%94%A8build%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F%E6%97%B6%E5%A4%9A%E5%87%BA%E6%9D%A5%E7%9A%84%E9%95%9C%E5%83%8F/">Dockerfile定制镜像</a></li><li class="post-list-item"><a class="post-list-link" href="/1970/01/01/Ubuntu%E7%B3%BB%E7%BB%9F%E8%BF%81%E7%A7%BB/">ubuntu系统迁移</a></li></ul>
     
 <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
 
