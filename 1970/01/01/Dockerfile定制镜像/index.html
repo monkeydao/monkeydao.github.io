@@ -16,9 +16,9 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="Dockerfile用build定制镜像时多出来的镜像 写作时间:2020年8月4日   问题描述：在dockerhub中找到continuumio&#x2F;anaconda3镜像的Dockerfile，本地build该Dockerfile后，发现本地镜像中不止会有anaconda3的镜像，还有很多none镜像，包括一个基础镜像。但是如果用docker pull continuumio&#x2F;anaconda3">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://github.com/monkeydao/monkeydao.github.io/tree/master/img/dockerImage/1.png">
-<meta property="og:image" content="http://yoursite.com/1970/01/01/Dockerfile%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F/image/dockerImage/2.png">
-<meta property="og:image" content="http://yoursite.com/1970/01/01/image/dockerImage/3.png">
+<meta property="og:image" content="http://yoursite.com/img/dockerImage/1.png">
+<meta property="og:image" content="http://yoursite.com/image/dockerImage/2.png">
+<meta property="og:image" content="http://yoursite.com/image/dockerImage/3.png">
 <meta property="og:image" content="http://yoursite.com/1970/01/01/Dockerfile%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F/4.png">
 <meta property="og:image" content="http://yoursite.com/1970/01/01/Dockerfile%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F/5.png">
 <meta property="og:image" content="http://yoursite.com/1970/01/01/Dockerfile%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F/6.png">
@@ -26,11 +26,11 @@
 <meta property="og:image" content="http://yoursite.com/1970/01/01/Dockerfile%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F/8.png">
 <meta property="og:image" content="http://yoursite.com/1970/01/01/Dockerfile%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F/10.png">
 <meta property="article:published_time" content="1970-01-01T00:00:00.000Z">
-<meta property="article:modified_time" content="2020-08-13T02:37:54.607Z">
+<meta property="article:modified_time" content="2020-08-13T02:50:28.777Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="docker">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://github.com/monkeydao/monkeydao.github.io/tree/master/img/dockerImage/1.png">
+<meta name="twitter:image" content="http://yoursite.com/img/dockerImage/1.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -335,13 +335,12 @@
 <p>前期思考：按照<strong>分层存储</strong>的概念，anaconda3镜像不应该是一个文件，而是以debian为基础镜像的多层文件联合组成。这样不将debian写死在anaconda3镜像中，有可能其他某个镜像也需要以debian为基础，那么该镜像和anaconda3可以共用debian（只需要一个debian），而如果将其写死，那么就需要两个debian，反而造成空间浪费。所以在本地build时，它不是一个独立的文件是好事。</p>
 <p>猜想：dockerhub中下载的镜像（由基础镜像定制而来）是个独立的镜像，其中包含了基础镜像。即：如果有imageA&amp;imageB，它们都由基础镜像image0构造而来，那么将imageA 和imageB pull到本地后，本地不会有image0,因为image0包含在imageA和imageB中。而如果用imageA和imageB的Dockerfile在本地定制镜像，那么本地会有基础镜像image0,且iamgeA和imageB中不包含image0,它们只是以image0为基础镜像所在的修改部分。</p>
 </blockquote>
-<h2 id="从dockerhub中pull-anaconda"><a href="#从dockerhub中pull-anaconda" class="headerlink" title="从dockerhub中pull anaconda"></a>从dockerhub中pull anaconda</h2><p><a target="_blank" rel="noopener" href="https://github.com/monkeydao/monkeydao.github.io/tree/master/img/dockerImage/">https://github.com/monkeydao/monkeydao.github.io/tree/master/img/dockerImage/</a></p>
-<ol>
+<h2 id="从dockerhub中pull-anaconda"><a href="#从dockerhub中pull-anaconda" class="headerlink" title="从dockerhub中pull anaconda"></a>从dockerhub中pull anaconda</h2><ol>
 <li><p>如图，pull之前本地没有基础镜像debian：</p>
-<p><img src="https://github.com/monkeydao/monkeydao.github.io/tree/master/img/dockerImage/1.png" alt="pull前"></p>
+<p><img src="/img/dockerImage/1.png" alt="pull前"></p>
 </li>
 <li><p>如图，pull之后，本地会多出anaconda3的镜像，但依然不会有debian的基础镜像。</p>
-<p><img src="image/dockerImage/2.png" alt="pull后"></p>
+<p><img src="/image/dockerImage/2.png" alt="pull后"></p>
 </li>
 </ol>
 <h2 id="用Dockerfile在本地build-anaconda"><a href="#用Dockerfile在本地build-anaconda" class="headerlink" title="用Dockerfile在本地build anaconda"></a>用Dockerfile在本地build anaconda</h2><ol>
@@ -358,7 +357,7 @@
 <li><p>build过程一共有8 steps，与Dockerfile中8条命令对应</p>
 </li>
 <li><p>每一条Dockerfile命令build过程类似下图：</p>
-<p><img src="../image/dockerImage/3.png" alt="一条Dockerfile命令build过程"></p>
+<p><img src="/image/dockerImage/3.png" alt="一条Dockerfile命令build过程"></p>
 <blockquote>
 <p>分析该过程，每一条Dockerfile在build时，会先暂时启动一个容器（Step 7/8：931c8429a5a5），执行所要求的命令，然后删除所用的执行命令的容器（Step 7/8：931c8429a5a5）。最后，提交了这一层（Step 7/8：329312b523c8）的镜像。</p>
 </blockquote>
@@ -466,7 +465,7 @@
 <p><strong>猜测</strong>，可能push和pull过程中行头出现的ID并不是镜像的ID，而是其他什么ID。docker在push时，会自动将目标镜像所依赖的底层文件打包进仓库，而在pull时，又会自动释放这些底层文件。</p>
 </li>
 </ol>
-<p><strong>针对本文提出的认识，若有思考错误之处，恳请网友指正；若对遗留问题有所见解，欢迎与我交流，谢谢。联系方式:<a href="mailto:&#109;&#111;&#110;&#x6b;&#101;&#x79;&#x74;&#97;&#x6f;&#64;&#102;&#111;&#x78;&#x6d;&#x61;&#105;&#x6c;&#46;&#99;&#x6f;&#x6d;">&#109;&#111;&#110;&#x6b;&#101;&#x79;&#x74;&#97;&#x6f;&#64;&#102;&#111;&#x78;&#x6d;&#x61;&#105;&#x6c;&#46;&#99;&#x6f;&#x6d;</a></strong></p>
+<p><strong>针对本文提出的认识，若有思考错误之处，恳请网友指正；若对遗留问题有所见解，欢迎与我交流，谢谢。联系方式:<a href="mailto:&#x6d;&#x6f;&#110;&#107;&#101;&#121;&#116;&#97;&#x6f;&#64;&#102;&#111;&#x78;&#109;&#97;&#x69;&#x6c;&#46;&#99;&#x6f;&#x6d;">&#x6d;&#x6f;&#110;&#107;&#101;&#121;&#116;&#97;&#x6f;&#64;&#102;&#111;&#x78;&#109;&#97;&#x69;&#x6c;&#46;&#99;&#x6f;&#x6d;</a></strong></p>
 
       
     </div>
@@ -478,7 +477,7 @@
         <p><span>本文标题:</span><a  href="/1970/01/01/Dockerfile%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F/">Dockerfile用build定制镜像时多出来的镜像</a></p>
         <p><span>文章作者:</span><a  href="/" title="访问  的个人博客"></a></p>
         <p><span>发布时间:</span>1970年01月01日 - 08时00分</p>
-        <p><span>最后更新:</span>2020年08月13日 - 10时37分</p>
+        <p><span>最后更新:</span>2020年08月13日 - 10时50分</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/1970/01/01/Dockerfile%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F/" title="Dockerfile用build定制镜像时多出来的镜像">http://yoursite.com/1970/01/01/Dockerfile%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F/</a>
             <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/1970/01/01/Dockerfile%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F/　　作者: " title=""></span>
@@ -492,11 +491,15 @@
 
 <nav id="article-nav">
   
-  
-    <a  href="/1970/01/01/docker%E6%90%AD%E5%BB%BApytorch%20cuda%E7%89%88/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">docker搭建pytorch cuda版</div>
-      <strong class="article-nav-caption">></strong>
+    <a  href="/1970/01/01/Ubuntu%E7%B3%BB%E7%BB%9F%E8%BF%81%E7%A7%BB/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          ubuntu系统迁移
+        
+      </div>
     </a>
+  
   
 </nav>
 
@@ -579,16 +582,16 @@
 
     <div class="scroll" id="post-nav-button">
         
-            <a  href="/" title="回到主页"><i class="fa fa-home"></i></a>
+            <a  href="/1970/01/01/Ubuntu%E7%B3%BB%E7%BB%9F%E8%BF%81%E7%A7%BB/" title="上一篇: ubuntu系统迁移">
+                <i class="fa fa-angle-left"></i>
+            </a>
         
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
         
-            <a  href="/1970/01/01/docker%E6%90%AD%E5%BB%BApytorch%20cuda%E7%89%88/" title="下一篇: docker搭建pytorch cuda版">
-                <i class="fa fa-angle-right"></i>
-            </a>
+            <a  href="/" title="回到主页"><i class="fa fa-home"></i></a>
         
     </div>
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/1970/01/01/Dockerfile%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F/">Dockerfile用build定制镜像时多出来的镜像</a></li><li class="post-list-item"><a class="post-list-link" href="/1970/01/01/docker%E6%90%AD%E5%BB%BApytorch%20cuda%E7%89%88/">docker搭建pytorch cuda版</a></li><li class="post-list-item"><a class="post-list-link" href="/1970/01/01/Ubuntu%E7%B3%BB%E7%BB%9F%E8%BF%81%E7%A7%BB/">ubuntu系统迁移</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/1970/01/01/docker%E6%90%AD%E5%BB%BApytorch%20cuda%E7%89%88/">docker搭建pytorch cuda版</a></li><li class="post-list-item"><a class="post-list-link" href="/1970/01/01/Ubuntu%E7%B3%BB%E7%BB%9F%E8%BF%81%E7%A7%BB/">ubuntu系统迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/1970/01/01/Dockerfile%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F/">Dockerfile用build定制镜像时多出来的镜像</a></li></ul>
     
 <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
 

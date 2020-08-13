@@ -16,13 +16,13 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="docker搭建pytorch cuda版本地主机配置保证本地主机有如下三个配置:  nvidia显卡驱动 cuda toolkit(貌似可以不装, NVIDIA Container Toolkit 官网介绍–Quickstart第2行有提到) cudnn   这些都是操作系统之上调用硬件GPU所必须的配置  Docker container配置 将pytorch装在docker containe">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://yoursite.com/1970/01/01/docker%E6%90%AD%E5%BB%BApytorch%20cuda%E7%89%88/1.png">
+<meta property="og:image" content="http://yoursite.com/image/dockerPytorch/1.png">
 <meta property="article:published_time" content="1970-01-01T00:00:00.000Z">
-<meta property="article:modified_time" content="2020-08-13T02:35:32.086Z">
+<meta property="article:modified_time" content="2020-08-13T02:50:03.199Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="docker, pytorch">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://yoursite.com/1970/01/01/docker%E6%90%AD%E5%BB%BApytorch%20cuda%E7%89%88/1.png">
+<meta name="twitter:image" content="http://yoursite.com/image/dockerPytorch/1.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -337,7 +337,7 @@
 <li><p>在Dockerfile中,直接使用pytorch官方镜像pytorch/pytorch:1.6.0-cuda10.1-cudnn7-runtime进行配置, 在container中pytorch所依赖的一切都是配好了的.</p>
 </li>
 </ol>
-<h2 id="本地主机和Docker-container的衔接"><a href="#本地主机和Docker-container的衔接" class="headerlink" title="本地主机和Docker container的衔接"></a>本地主机和Docker container的衔接</h2><p><img src="1.png" alt="容器调用主机gpu"></p>
+<h2 id="本地主机和Docker-container的衔接"><a href="#本地主机和Docker-container的衔接" class="headerlink" title="本地主机和Docker container的衔接"></a>本地主机和Docker container的衔接</h2><p><img src="/image/dockerPytorch/1.png" alt="容器调用主机gpu"></p>
 <ol>
 <li><p>在docker 19.03版本之前, 需要在本地主机上安装插件nvidia-docker2, docker容器内的pytorch必须通过此插件才能调用本地主机的GPU资源.</p>
 </li>
@@ -380,7 +380,7 @@
         <p><span>本文标题:</span><a  href="/1970/01/01/docker%E6%90%AD%E5%BB%BApytorch%20cuda%E7%89%88/">docker搭建pytorch cuda版</a></p>
         <p><span>文章作者:</span><a  href="/" title="访问  的个人博客"></a></p>
         <p><span>发布时间:</span>1970年01月01日 - 08时00分</p>
-        <p><span>最后更新:</span>2020年08月13日 - 10时35分</p>
+        <p><span>最后更新:</span>2020年08月13日 - 10时50分</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/1970/01/01/docker%E6%90%AD%E5%BB%BApytorch%20cuda%E7%89%88/" title="docker搭建pytorch cuda版">http://yoursite.com/1970/01/01/docker%E6%90%AD%E5%BB%BApytorch%20cuda%E7%89%88/</a>
             <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/1970/01/01/docker%E6%90%AD%E5%BB%BApytorch%20cuda%E7%89%88/　　作者: " title=""></span>
@@ -393,15 +393,6 @@
 
 
 <nav id="article-nav">
-  
-    <a  href="/1970/01/01/Dockerfile%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption"><</strong>
-      <div class="article-nav-title">
-        
-          Dockerfile用build定制镜像时多出来的镜像
-        
-      </div>
-    </a>
   
   
     <a  href="/1970/01/01/Ubuntu%E7%B3%BB%E7%BB%9F%E8%BF%81%E7%A7%BB/" id="article-nav-older" class="article-nav-link-wrap">
@@ -490,9 +481,7 @@
 
     <div class="scroll" id="post-nav-button">
         
-            <a  href="/1970/01/01/Dockerfile%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F/" title="上一篇: Dockerfile用build定制镜像时多出来的镜像">
-                <i class="fa fa-angle-left"></i>
-            </a>
+            <a  href="/" title="回到主页"><i class="fa fa-home"></i></a>
         
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
         
@@ -501,7 +490,7 @@
             </a>
         
     </div>
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/1970/01/01/Dockerfile%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F/">Dockerfile用build定制镜像时多出来的镜像</a></li><li class="post-list-item"><a class="post-list-link" href="/1970/01/01/docker%E6%90%AD%E5%BB%BApytorch%20cuda%E7%89%88/">docker搭建pytorch cuda版</a></li><li class="post-list-item"><a class="post-list-link" href="/1970/01/01/Ubuntu%E7%B3%BB%E7%BB%9F%E8%BF%81%E7%A7%BB/">ubuntu系统迁移</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/1970/01/01/docker%E6%90%AD%E5%BB%BApytorch%20cuda%E7%89%88/">docker搭建pytorch cuda版</a></li><li class="post-list-item"><a class="post-list-link" href="/1970/01/01/Ubuntu%E7%B3%BB%E7%BB%9F%E8%BF%81%E7%A7%BB/">ubuntu系统迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/1970/01/01/Dockerfile%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F/">Dockerfile用build定制镜像时多出来的镜像</a></li></ul>
     
 <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
 
