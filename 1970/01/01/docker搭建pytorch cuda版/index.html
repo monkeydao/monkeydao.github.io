@@ -7,20 +7,21 @@
   
   
   
-  <title>ubuntu系统迁移 | Hexo</title>
+  <title>Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Ubuntu系统迁移 写作时间：2020年7月29日  环境    Machine OS    Origin Machine1 ubuntu1   Target Machine2 ubuntu2    迁移方向：Origin –&gt; Target 引导方式：UEFI + GPT  前话 因为ubuntu一切皆文件, 故迁移系统就是将ubuntu2的系统文件（&#x2F;目录下所有文件）完全替换成ubun">
+  <meta name="description" content="docker搭建pytorch cuda版本地主机配置保证本地主机有如下三个配置:  nvidia显卡驱动 cuda toolkit(貌似可以不装, NVIDIA Container Toolkit 官网介绍–Quickstart第2行有提到) cudnn   这些都是操作系统之上调用硬件GPU所必须的配置  Docker container配置 将pytorch装在docker containe">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ubuntu系统迁移">
-<meta property="og:url" content="http://yoursite.com/1970/01/01/Ubuntu%E7%B3%BB%E7%BB%9F%E8%BF%81%E7%A7%BB/index.html">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://yoursite.com/1970/01/01/docker%E6%90%AD%E5%BB%BApytorch%20cuda%E7%89%88/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="Ubuntu系统迁移 写作时间：2020年7月29日  环境    Machine OS    Origin Machine1 ubuntu1   Target Machine2 ubuntu2    迁移方向：Origin –&gt; Target 引导方式：UEFI + GPT  前话 因为ubuntu一切皆文件, 故迁移系统就是将ubuntu2的系统文件（&#x2F;目录下所有文件）完全替换成ubun">
+<meta property="og:description" content="docker搭建pytorch cuda版本地主机配置保证本地主机有如下三个配置:  nvidia显卡驱动 cuda toolkit(貌似可以不装, NVIDIA Container Toolkit 官网介绍–Quickstart第2行有提到) cudnn   这些都是操作系统之上调用硬件GPU所必须的配置  Docker container配置 将pytorch装在docker containe">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://yoursite.com/1970/01/01/docker%E6%90%AD%E5%BB%BApytorch%20cuda%E7%89%88/1.png">
 <meta property="article:published_time" content="1970-01-01T00:00:00.000Z">
-<meta property="article:modified_time" content="2020-08-13T02:13:48.446Z">
+<meta property="article:modified_time" content="2020-08-13T02:32:16.892Z">
 <meta property="article:author" content="John Doe">
-<meta property="article:tag" content="ubuntu">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/1970/01/01/docker%E6%90%AD%E5%BB%BApytorch%20cuda%E7%89%88/1.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -277,10 +278,10 @@
         </header>
     </div>
 </nav>
-      <div class="body-wrap"><article id="post-Ubuntu系统迁移" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-docker搭建pytorch cuda版" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a  href="/1970/01/01/Ubuntu%E7%B3%BB%E7%BB%9F%E8%BF%81%E7%A7%BB/" class="article-date">
+      <a  href="/1970/01/01/docker%E6%90%AD%E5%BB%BApytorch%20cuda%E7%89%88/" class="article-date">
       <time datetime="1970-01-01T00:00:00.000Z" itemprop="datePublished">1970-01-01</time>
 </a>
 
@@ -291,215 +292,59 @@
       <input type="hidden" class="isFancy" />
     
     
-      <header class="article-header">
-        
-  
-    <h1 class="article-title" itemprop="name">
-      ubuntu系统迁移
-    </h1>
-  
-
-
-      </header>
-      
-      <div class="article-info article-info-post">
-        
-
-        
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ubuntu/" rel="tag">ubuntu</a></li></ul>
-    </div>
-
-        <div class="clearfix"></div>
-      </div>
-      
-    
     <div class="article-entry" itemprop="articleBody">
       
           
-        <h1 id="Ubuntu系统迁移"><a href="#Ubuntu系统迁移" class="headerlink" title="Ubuntu系统迁移"></a>Ubuntu系统迁移</h1><blockquote>
-<p>写作时间：2020年7月29日</p>
-</blockquote>
-<h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><table>
-<thead>
-<tr>
-<th></th>
-<th>Machine</th>
-<th>OS</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Origin</td>
-<td>Machine1</td>
-<td>ubuntu1</td>
-</tr>
-<tr>
-<td>Target</td>
-<td>Machine2</td>
-<td>ubuntu2</td>
-</tr>
-</tbody></table>
-<blockquote>
-<p><strong>迁移方向</strong>：Origin –&gt; Target</p>
-<p><strong>引导方式</strong>：UEFI + GPT</p>
-</blockquote>
-<h2 id="前话"><a href="#前话" class="headerlink" title="前话"></a>前话</h2><ol>
-<li>因为ubuntu<strong>一切皆文件</strong>, 故迁移系统就是将ubuntu2的系统文件（/目录下所有文件）完全替换成ubuntu1。</li>
-<li>系统迁移和备份是同一个原理——都是拷贝复制OS文件， 但两者的环境略有不同。<ul>
-<li><strong>系统备份</strong>：它是在本电脑上恢复OS文件，硬盘分区和引导位置都未改变；</li>
-<li><strong>系统迁移</strong>：既然是迁移，那么就是不同电脑之间的操作，硬件环境一定发生了变化，只讲OS文件替换进去是不行的，还要配置环境。</li>
+        <h1 id="docker搭建pytorch-cuda版"><a href="#docker搭建pytorch-cuda版" class="headerlink" title="docker搭建pytorch cuda版"></a>docker搭建pytorch cuda版</h1><h2 id="本地主机配置"><a href="#本地主机配置" class="headerlink" title="本地主机配置"></a>本地主机配置</h2><p>保证本地主机有如下三个配置:</p>
+<ul>
+<li>nvidia显卡驱动</li>
+<li>cuda toolkit(<em>貌似可以不装, NVIDIA Container Toolkit 官网介绍–Quickstart第2行有提到</em>)</li>
+<li>cudnn</li>
 </ul>
+<blockquote>
+<p>这些都是操作系统之上调用硬件GPU所必须的配置</p>
+</blockquote>
+<h2 id="Docker-container配置"><a href="#Docker-container配置" class="headerlink" title="Docker container配置"></a>Docker container配置</h2><ol>
+<li><p>将pytorch装在docker container中,若想让pytorch调用本地GPU加速,需要有cuda toolkit和cudnn包. 通过pytorch安装命令<code>conda install pytorch torchvision cudatoolkit=10.2</code>在anaconda中安装时,可以观察到cuda toolkit和cudnn包被安装了.</p>
+<blockquote>
+<p>**注意: **此处的cuda toolkit和cudnn包相当于接口, 与本地主机配置中的不一样. 但要保证两者的版本相同.</p>
+</blockquote>
+</li>
+<li><p>在Dockerfile中,直接使用pytorch官方镜像pytorch/pytorch:1.6.0-cuda10.1-cudnn7-runtime进行配置, 在container中pytorch所依赖的一切都是配好了的.</p>
 </li>
 </ol>
-<h2 id="UEFI-GPT-系统引导程序那些事儿"><a href="#UEFI-GPT-系统引导程序那些事儿" class="headerlink" title="UEFI + GPT 系统引导程序那些事儿"></a>UEFI + GPT 系统引导程序那些事儿</h2><ol>
-<li><p>ubuntu系统就是/目录下的所有文件，它存放于硬盘GPT分区的某个位置上。电脑开机的时候，不会智能到自动找到该OS文件并执行的地步，需要引导程序告诉计算机在什么位置寻找OS，故引导程序实际就是一道桥梁的作用。</p>
-</li>
-<li><p>对于一个在UEFI模式下安装的ubuntu系统，在安装时，某硬盘（本文是sda）一定有如下两个分区：</p>
-<ul>
-<li><p>/dev/sda1—&gt;OS System：此分区存放Ubuntu的系统文件，其中包含：</p>
-<ul>
-<li>/etc/fstab, /etc/fstab.d（可能没有）：启动文件</li>
-<li>/boot/grub/grub.cfg：分区文件</li>
-</ul>
-<blockquote>
-<p><strong>注：</strong>在fstab启动文件中，可以看到里面根据分区的UUID绑定了/dev/sda1给/，将/dev/sda2绑定到/boot/efi中，这里也是启动的关键。如果UUID不正确，就无法找到引导程序和OS文件，系统恢复后无法正常开机。</p>
-</blockquote>
-</li>
-<li><p>/dev/sda2 —&gt; EFI System：此分区是在EFI下安装Ubuntu必要的，里面应该存放了引导程序。</p>
-</li>
-</ul>
-</li>
-<li><p>系统备份与迁移</p>
-<ul>
-<li><p><strong>系统备份</strong>：因为备份恢复前后，电脑的分区不会改变，而且备份恢复改变的只是OS所在分区，不会影响到/dev/sda2的EFI System。所以就算换了OS文件，系统还是能正常引导修复。因此，系统备份没有系统迁移复杂，只需要复制拷贝OS文件即可。</p>
-</li>
-<li><p><strong>系统迁移</strong>：因为是将系统从一台电脑移动到另外一台电脑，硬盘分区会变，EFI文件也会改变。所以对于系统迁移，建议：</p>
-<blockquote>
-<p>在machine2上先重装系统，新系统中EFI System、fstab启动文件以及grub.cfg分区文件都是匹配的。即，新系统下一切正常，只需要删除ubuntu2然后移入ubuntu1即可，其他不变。</p>
-</blockquote>
-</li>
-</ul>
-</li>
-</ol>
-<h2 id="系统迁移正文"><a href="#系统迁移正文" class="headerlink" title="系统迁移正文"></a>系统迁移正文</h2><blockquote>
-<p>事先准备一个ubuntu启动盘</p>
-</blockquote>
-<h3 id="系统备份In-Machine1"><a href="#系统备份In-Machine1" class="headerlink" title="系统备份In Machine1"></a>系统备份In Machine1</h3><ol>
-<li><p>Machine1 —&gt; U盘启动 —&gt; Try Ubuntu进入<strong>livecd</strong>模式: 开终端，进入管理员权限。</p>
-</li>
-<li><p>挂载ubuntu1所在分区和移动硬盘</p>
-<ul>
-<li><code>mkdir data</code>：在/目录下，创建data。</li>
-<li><code>mount /dev/sda1 /mnt</code>：假设ubuntu1在Machine1的sda1上，将其挂载到mnt上</li>
-<li><code>mount /dev/sdb1 /data</code>：假设移动硬盘在Machine1的sdb1上，将其挂载到data上</li>
-</ul>
-</li>
-<li><p>备份ubuntu1至移动硬盘</p>
-<ul>
-<li>方法一：tar备份</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -cvpzf &#x2F;data&#x2F;ubuntu.backup --exclude&#x3D;&#x2F;mnt&#x2F;proc --exclude&#x3D;&#x2F;mnt&#x2F;lost+found --exclude&#x3D;&#x2F;mnt&#x2F;tmp --exclude&#x3D;&#x2F;mnt&#x2F;run --exclude&#x3D;&#x2F;mnt&#x2F;media --exclude&#x3D;&#x2F;mnt&#x2F;mnt</span><br></pre></td></tr></table></figure>
-
-<p><strong>参数：</strong><br>-c： 新建一个备份文档<br>-v： 显示详细信息<br>-p： 保存权限，并应用到所有文件<br>-z： 用gzip压缩备份文档，减小空间<br>-f： 指定备份文件的路径<br>–exclude： 排除指定目录，不进行备</p>
-<p><strong>排除如下文件：</strong><br>/proc：一个虚拟文件系统，系统运行的每一个进程都会自动在这个目录下面创建一个进程目录。既然是系统自动创建，也就没必要备份的必要了。<br>/tmp：一个临时文件夹，系统的一些临时文件会放在这里。<br>/lost+found：系统发生错误时（比如非法关机），可以在这里找回一些丢失文件。<br>/media：多媒体挂载点，像u盘、移动硬盘、windons分区等都会自动挂载到这个目录下。<br>/mnt：临时挂载点，你可以自己挂载一些文件系统到这里。<br>/run：系统从启动以来产生的一些信息文件。</p>
-<ul>
-<li><p>方法二，mksquashfs（如果用tar备份和恢复时出错，就用该方式）</p>
-<p><code>mksquashfs /mnt/data/ubuntu.sfs</code>：备份系统</p>
-<p><code>sync</code>：让系统保存下数据</p>
-</li>
-</ul>
-</li>
-<li><p>解除绑定：</p>
-<p><code>umont /data</code></p>
-<p><code>umount /mnt</code></p>
-</li>
-</ol>
-<h3 id="系统恢复-In-Machine2"><a href="#系统恢复-In-Machine2" class="headerlink" title="系统恢复 In Machine2"></a>系统恢复 In Machine2</h3><ol>
-<li><p>使用启动u盘在Machine2上以EFI模式安装ubuntu2系统，本文分区如下：</p>
-<ul>
-<li>sda1 –&gt;  ubuntu</li>
-<li>sda2 –&gt;  EFI System</li>
-</ul>
-</li>
-<li><p>安装新系统之后，依然从U盘启动，Try Ubuntu进入<strong>livecd</strong>模式: 开终端，进入管理员权限。</p>
-</li>
-<li><p>挂载：</p>
-<ul>
-<li><code>mkdir data</code>：在/目录下，创建data用以挂载移动硬盘</li>
-<li><code>mount /dev/sda1 /mnt</code>：将ubuntu2挂载到mnt</li>
-<li><code>mount /dev/sdc1 /data</code>：将移动硬盘挂载到/data</li>
-</ul>
-</li>
-<li><p>保留原ubuntu2的启动文件和分区文件：（如果是本地系统备份的话，可略此步）</p>
-<blockquote>
-<p>因为这两个文件记录了machine2上ubuntu2上的启动信息和分区信息，而<strong>系统备份</strong>中的文件是machine1的，放在新环境下，配置一定出错，所以要用<strong>本土</strong>的配置文件，只需换个系统文件即可。</p>
-</blockquote>
-<ul>
-<li><code>cp /mnt/etc/fstab（若有fstab.d，就一并复制） /data</code>：保留原启动文件</li>
-<li><code>cp /mnt/boot/grub/grub.cfg /data</code>：保留原分区文件</li>
-</ul>
-</li>
-<li><p>系统恢复</p>
-<ul>
-<li><p>方法一： tar</p>
-<p> <code>rm -rf /mnt/*</code>：将挂载到/mnt上的原系统彻底删除（可能此命令有误，可用其他命令）</p>
-<p> <code>tar -xvpzf /data/ubuntu.backup /mnt</code>：将备份系统恢复到挂载到/mnt上的ubuntu</p>
-<p> <code>cp /data/fstab(fstab.d) /mnt/etc</code>：恢复启动文件（<em>本地备份恢复不需要此步</em>）</p>
-<p> <code>cp /data/grub.cfg /mnt/boot/grub</code>：恢复分区文件（<em>本地备份恢复不需要此步</em>）</p>
-</li>
-<li><p>方法二：mksquashfs</p>
-<p> <code>mkdir /rescovery/mnt</code></p>
-<p> <code>mount -o loop /data/ubuntu.sfs /rescovery/mnt</code>：将备份文件恢复至/rescovery/mnt中</p>
-<p> <code>cp -a /rescovery/mnt/* /mnt</code>：将备份文件完整地拷贝至ubuntu2挂载的/mnt中</p>
-<p> <code>cp /data/fstab(fstab.d) /mnt/etc</code>：恢复启动文件（<em>本地备份恢复不需要此步</em>）</p>
-<p> <code>cp /data/grub.cfg /mnt/boot/grub</code>：恢复分区文件（<em>本地备份恢复不需要此步</em>）</p>
-</li>
-</ul>
-<blockquote>
-<p>注：如果只是本地备份恢复到此即可结束（仅仅拷贝粘贴系统文件即可），如果是迁移系统，还需要有如下步骤！第6步，在系统迁移时试过了，但在系统启动时还是会出错；第7步，应该可行，但<code>sudo add-apt-repository ppa:yannubuntu/boot-repair</code>添加失败，来者需要特别注意。</p>
-</blockquote>
-</li>
-<li><p>引导修复1</p>
-<ul>
-<li><p>从try ubuntu中为ubuntu2挂载虚拟文件系统，为引导修复做准备：</p>
-<p><code>mount -o bind /dev /mnt/dev</code></p>
-<p><code>mount -o bind /proc /mnt/proc</code></p>
-<p><code>mount -o bind /sys /mnt/sys</code></p>
-</li>
-<li><p><code>chroot /mnt</code>：进入ubuntu2</p>
-</li>
-<li><p>对比UUID</p>
-<ul>
-<li><p>在try ubuntu中新建一个终端，输入<code>blkid</code>查看硬盘分区UUID</p>
-</li>
-<li><p>在上面chroot /mnt过的终端中，使用<code>vim /etc/fstab</code>查看启动文件中的信息。对照/sda1（mount point为/）和/sda2（mount point为/boot/efi）绑定的两个UUID是否和/dev/sda1和/dev/sda2相吻合。（因为是拷贝的原ubuntu2系统中的文件，应该不会有错误，有错误的话，就需要修改。）</p>
-</li>
-<li><pre><code class="ubuntu">grub-install /dev/sda
-update-grub
-&lt;!--hexoPostRenderEscape:&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;* 退出并卸载挂载&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &amp;#96;&amp;#96;&amp;#96;ubuntu&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  exit&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  umount &amp;#x2F;mnt&amp;#x2F;dev&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  umount &amp;#x2F;mnt&amp;#x2F;sys&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  umount &amp;#x2F;mnt&amp;#x2F;proc&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  umount &amp;#x2F;data&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  umount &amp;#x2F;mnt&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  sync&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;:hexoPostRenderEscape--&gt;</code></pre>
-</li>
-<li><p>重启</p>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>引导修复2</p>
-<ul>
-<li><p>从u盘启动，进入try ubuntu，安装boot-repair</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo add-apt-repository ppa:yannubuntu&#x2F;boot-repair        添加源</span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install -y boot-repair  安装boot-repair</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>进入boot-repair使用Recommended repair进行修复。</p>
-</li>
-</ul>
-</li>
-</ol>
-<p><strong>参考文献</strong>：</p>
+<h2 id="本地主机和Docker-container的衔接"><a href="#本地主机和Docker-container的衔接" class="headerlink" title="本地主机和Docker container的衔接"></a>本地主机和Docker container的衔接</h2><p><img src="1.png" alt="容器调用主机gpu"></p>
 <ol>
-<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/sunny0660/article/details/79274642">https://blog.csdn.net/sunny0660/article/details/79274642</a></li>
-<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/mbytes/article/details/100165856">https://blog.csdn.net/mbytes/article/details/100165856</a></li>
-<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_35523593/article/details/78545530">https://blog.csdn.net/qq_35523593/article/details/78545530</a></li>
+<li><p>在docker 19.03版本之前, 需要在本地主机上安装插件nvidia-docker2, docker容器内的pytorch必须通过此插件才能调用本地主机的GPU资源.</p>
+</li>
+<li><p>从docker 19.03版本开始, nvidia的GPU能自动支持容器中应用的调用. 详情请参考: <a target="_blank" rel="noopener" href="https://github.com/NVIDIA/nvidia-docker">NVIDIA Container Toolkit官方文档</a></p>
+</li>
+<li><p>如NVIDIA Container Toolkit官方文档所说, docker container和host os之间需要添加<strong>中间件: nvidia-container-toolkit</strong>,添加方法见官方文档!</p>
+</li>
+<li><p>中间在网站上搜索了众多关于如何在docker中搭建pytorch cuda版博客, 均介绍需要添加<strong>中间件nvidia-container-runtime</strong>,添加方法见<a target="_blank" rel="noopener" href="https://nvidia.github.io/nvidia-container-runtime/">nvidia-container-runtime官方文档</a>. 为避免出错, 将3和4来两个中间件都加上.</p>
+<blockquote>
+<p>添加nvidia-container-runtime时, 先按照nvidia-container-runtime官方文档添加repository, 然后apt-get install nvidia-container-runtime即可.</p>
+</blockquote>
+</li>
+<li><p>在添加nvidia-container-toolkit 和 nvidia-container-runtime时可能出现错误<code>no valid openPGP data found</code>, 建议先卸载安装了的nvidia-container-toolkit和nvidia-container-runtime(如果有的话), 然后<code>unset http_proxy</code>,<code>unset https_proxy</code>,重启再重新添加. 参见<a target="_blank" rel="noopener" href="https://github.com/NVIDIA/nvidia-docker/issues/1183">no valid openPGP data found 错误</a>.</p>
+</li>
 </ol>
+<h2 id="制定pytorch-cuda版镜像"><a href="#制定pytorch-cuda版镜像" class="headerlink" title="制定pytorch cuda版镜像"></a>制定pytorch cuda版镜像</h2><p>在如上三个配置都OK的情况下, 使用如下Dockerfile制定一个专属镜像,其中包含miniconda, pandas, scikit-learn 和jupyterlab.</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># time: 2020-08-11</span></span><br><span class="line"><span class="keyword">FROM</span> pytorch/pytorch:<span class="number">1.6</span>.<span class="number">0</span>-cuda10.<span class="number">1</span>-cudnn7-runtime</span><br><span class="line"></span><br><span class="line"><span class="comment"># docker build -t monkeytao/pytorch:1.6.0-cuda10.1-cudnn7-runtime .</span></span><br><span class="line"><span class="comment"># docker run -it -p 9991:8888 --name pytorch-sj-test2 --restart=always --gpus all --mount type=bind,source=/media/ubuntu/sunjing,target=/workspace monkeytao/pytorch:1.6.0-cuda10.1-cudnn7-runtime bash</span></span><br><span class="line"><span class="comment"># The default password of jupyterlab is toor!</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># changing ubuntu&#x27;s apt source to ali source</span></span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> sources.list /etc/apt/sources.list</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> apt-get update --fix-missing &amp;&amp; apt-get install -y --no-install-recommends wget &amp;&amp; \</span></span><br><span class="line"><span class="bash">    wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh &amp;&amp; \</span></span><br><span class="line"><span class="bash">    /bin/bash ~/miniconda.sh -b -p /usr/<span class="built_in">local</span>/src/miniconda &amp;&amp; \</span></span><br><span class="line"><span class="bash">    \</span></span><br><span class="line"><span class="bash"><span class="comment"># changing anaconda source to tsinghua source and installing pytorch(no &#x27;-c pytorch&#x27; will quickly install from tsinghua, or will very slowly install from foreign source)</span></span></span><br><span class="line">    conda config --<span class="keyword">add</span><span class="bash"> channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main &amp;&amp; \</span></span><br><span class="line"><span class="bash">    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free &amp;&amp; \</span></span><br><span class="line"><span class="bash">    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r &amp;&amp; \</span></span><br><span class="line"><span class="bash">    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/pro &amp;&amp; \</span></span><br><span class="line"><span class="bash">    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/msys2 &amp;&amp; \</span></span><br><span class="line"><span class="bash">    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/pytorch &amp;&amp; \</span></span><br><span class="line"><span class="bash">    conda config --<span class="built_in">set</span> show_channel_urls yes &amp;&amp; \</span></span><br><span class="line"><span class="bash">    \</span></span><br><span class="line"><span class="bash"><span class="comment"># installing jupyter lab and initializing jupyter_notebook_config.py(pandas and scikit-learn are installed for vioDetection Project)</span></span></span><br><span class="line">    conda install jupyterlab pandas scikit-learn &amp;&amp; \</span><br><span class="line">    jupyter notebook --generate-config &amp;&amp; \</span><br><span class="line">    echo <span class="string">&quot;c.NotebookApp.allow_remote_access = True&quot;</span> &gt;&gt; /root/.jupyter/jupyter_notebook_config.py &amp;&amp; \</span><br><span class="line">    echo <span class="string">&quot;c.NotebookApp.open_browser = False&quot;</span> &gt;&gt; /root/.jupyter/jupyter_notebook_config.py &amp;&amp; \</span><br><span class="line">    echo <span class="string">&quot;c.NotebookApp.ip=&#x27;*&#x27;&quot;</span> &gt;&gt; /root/.jupyter/jupyter_notebook_config.py &amp;&amp; \</span><br><span class="line">    echo <span class="string">&quot;c.NotebookApp.password_required = False&quot;</span> &gt;&gt; /root/.jupyter/jupyter_notebook_config.py &amp;&amp; \</span><br><span class="line">    echo <span class="string">&quot;c.NotebookApp.allow_root = True&quot;</span> &gt;&gt; /root/.jupyter/jupyter_notebook_config.py &amp;&amp; \</span><br><span class="line">    echo <span class="string">&quot;c.NotebookApp.password = &#x27;sha1:547ed8f90dba:d99cab8e40889a31141d37cc0f7ae258c8f6d4f1&#x27;&quot;</span> &gt;&gt; /root/.jupyter/jupyter_notebook_config.py &amp;&amp; \</span><br><span class="line">    \</span><br><span class="line"><span class="comment"># deleting all unuseful file to keep the image light enough</span></span><br><span class="line">    rm ~/miniconda.sh &amp;&amp; \</span><br><span class="line">    apt-get purge --autoremove -y wget &amp;&amp; \</span><br><span class="line">    apt-get autoremove &amp;&amp; apt-get autoclean &amp;&amp; \</span><br><span class="line">    rm -rf /var/lib/apt/lists/*</span><br><span class="line"></span><br><span class="line"><span class="keyword">CMD</span><span class="bash"> [ <span class="string">&quot;jupyter lab &amp;&quot;</span> ]</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>**注: **</p>
+<ol>
+<li>使用命令<code>docker run -it -p 9991:8888 --name pytorch-sj-test2 --restart=always --gpus all --mount type=bind,source=yourpath,target=/workspace monkeytao/pytorch:1.6.0-cuda10.1-cudnn7-runtime bash</code>创建容器, 其中:<ul>
+<li>pytorch-sj-test2是容器名,需自己另设</li>
+<li>9991是容器中jupyterlab映射到本地主机的端口号,设置时要注意不要和已用端口冲突</li>
+<li>yourpath是你在本地主机中工程路径, 通过–mount将其挂载到容器的/workspace下, 然后在容器的workspace下运行jupyterlab, 这样在本地通过浏览器访问jupyterlab时就可以添加修改在主机中的工程文件.</li>
+</ul>
+</li>
+<li>创建镜像后,需要通过<code>nohup jupyter lab &amp;</code>运行jupyterlab, 之后就可以在本地通过浏览器访问了.</li>
+<li><a target="_blank" rel="noopener" href="https://hub.docker.com/r/nvidia/cuda">nvidia cuda官方镜像</a>中Overview部分有介绍镜像中base, runtime和devel的区别, 还有一些其他知识,对于制定本镜像大有帮助,值得细看.</li>
+</ol>
+</blockquote>
 
       
     </div>
@@ -508,13 +353,13 @@ update-grub
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a  href="/1970/01/01/Ubuntu%E7%B3%BB%E7%BB%9F%E8%BF%81%E7%A7%BB/">ubuntu系统迁移</a></p>
+        <p><span>本文标题:</span><a  href="/1970/01/01/docker%E6%90%AD%E5%BB%BApytorch%20cuda%E7%89%88/"></a></p>
         <p><span>文章作者:</span><a  href="/" title="访问  的个人博客"></a></p>
         <p><span>发布时间:</span>1970年01月01日 - 08时00分</p>
-        <p><span>最后更新:</span>2020年08月13日 - 10时13分</p>
+        <p><span>最后更新:</span>2020年08月13日 - 10时32分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/1970/01/01/Ubuntu%E7%B3%BB%E7%BB%9F%E8%BF%81%E7%A7%BB/" title="ubuntu系统迁移">http://yoursite.com/1970/01/01/Ubuntu%E7%B3%BB%E7%BB%9F%E8%BF%81%E7%A7%BB/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/1970/01/01/Ubuntu%E7%B3%BB%E7%BB%9F%E8%BF%81%E7%A7%BB/　　作者: " title=""></span>
+            <span>原始链接:</span><a class="post-url" href="/1970/01/01/docker%E6%90%AD%E5%BB%BApytorch%20cuda%E7%89%88/" title="">http://yoursite.com/1970/01/01/docker%E6%90%AD%E5%BB%BApytorch%20cuda%E7%89%88/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/1970/01/01/docker%E6%90%AD%E5%BB%BApytorch%20cuda%E7%89%88/　　作者: " title=""></span>
         </p>
         <p>
             <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
@@ -525,18 +370,9 @@ update-grub
 
 <nav id="article-nav">
   
-    <a  href="/1970/01/01/docker%E6%90%AD%E5%BB%BApytorch%20cuda%E7%89%88/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption"><</strong>
-      <div class="article-nav-title">
-        
-          (no title)
-        
-      </div>
-    </a>
   
-  
-    <a  href="/1970/01/01/Dockerfile%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Dockerfile用build定制镜像时多出来的镜像</div>
+    <a  href="/1970/01/01/Ubuntu%E7%B3%BB%E7%BB%9F%E8%BF%81%E7%A7%BB/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">ubuntu系统迁移</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -548,7 +384,7 @@ update-grub
 
     <div id="toc" class="toc-article">
     <strong class="toc-title">文章目录</strong>
-    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Ubuntu%E7%B3%BB%E7%BB%9F%E8%BF%81%E7%A7%BB"><span class="toc-number">1.</span> <span class="toc-text">Ubuntu系统迁移</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83"><span class="toc-number">1.1.</span> <span class="toc-text">环境</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%AF%9D"><span class="toc-number">1.2.</span> <span class="toc-text">前话</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#UEFI-GPT-%E7%B3%BB%E7%BB%9F%E5%BC%95%E5%AF%BC%E7%A8%8B%E5%BA%8F%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF"><span class="toc-number">1.3.</span> <span class="toc-text">UEFI + GPT 系统引导程序那些事儿</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E8%BF%81%E7%A7%BB%E6%AD%A3%E6%96%87"><span class="toc-number">1.4.</span> <span class="toc-text">系统迁移正文</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E5%A4%87%E4%BB%BDIn-Machine1"><span class="toc-number">1.4.1.</span> <span class="toc-text">系统备份In Machine1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E6%81%A2%E5%A4%8D-In-Machine2"><span class="toc-number">1.4.2.</span> <span class="toc-text">系统恢复 In Machine2</span></a></li></ol></li></ol></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#docker%E6%90%AD%E5%BB%BApytorch-cuda%E7%89%88"><span class="toc-number">1.</span> <span class="toc-text">docker搭建pytorch cuda版</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%AC%E5%9C%B0%E4%B8%BB%E6%9C%BA%E9%85%8D%E7%BD%AE"><span class="toc-number">1.1.</span> <span class="toc-text">本地主机配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker-container%E9%85%8D%E7%BD%AE"><span class="toc-number">1.2.</span> <span class="toc-text">Docker container配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%AC%E5%9C%B0%E4%B8%BB%E6%9C%BA%E5%92%8CDocker-container%E7%9A%84%E8%A1%94%E6%8E%A5"><span class="toc-number">1.3.</span> <span class="toc-text">本地主机和Docker container的衔接</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%B6%E5%AE%9Apytorch-cuda%E7%89%88%E9%95%9C%E5%83%8F"><span class="toc-number">1.4.</span> <span class="toc-text">制定pytorch cuda版镜像</span></a></li></ol></li></ol>
 </div>
 <style>
     .left-col .switch-btn {
@@ -621,13 +457,11 @@ update-grub
 
     <div class="scroll" id="post-nav-button">
         
-            <a  href="/1970/01/01/docker%E6%90%AD%E5%BB%BApytorch%20cuda%E7%89%88/" title="上一篇: ">
-                <i class="fa fa-angle-left"></i>
-            </a>
+            <a  href="/" title="回到主页"><i class="fa fa-home"></i></a>
         
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
         
-            <a  href="/1970/01/01/Dockerfile%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F/" title="下一篇: Dockerfile用build定制镜像时多出来的镜像">
+            <a  href="/1970/01/01/Ubuntu%E7%B3%BB%E7%BB%9F%E8%BF%81%E7%A7%BB/" title="下一篇: ubuntu系统迁移">
                 <i class="fa fa-angle-right"></i>
             </a>
         
