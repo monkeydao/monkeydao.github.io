@@ -198,7 +198,7 @@
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/ubuntu/" style="font-size: 10px;">ubuntu</a>
+                        <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/docker-pytorch/" style="font-size: 10px;">docker, pytorch</a> <a href="/tags/ubuntu/" style="font-size: 10px;">ubuntu</a>
                     </div>
                 </section>
                 
@@ -277,6 +277,207 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-Dockerfile定制镜像" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a  href="/1970/01/01/Dockerfile%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F/" class="article-date">
+      <time datetime="1970-01-01T00:00:00.000Z" itemprop="datePublished">1970-01-01</time>
+</a>
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a  class="article-title" href="/1970/01/01/Dockerfile%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F/">Dockerfile用build定制镜像时多出来的镜像</a>
+    </h1>
+  
+
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h1 id="Dockerfile用build定制镜像时多出来的镜像"><a href="#Dockerfile用build定制镜像时多出来的镜像" class="headerlink" title="Dockerfile用build定制镜像时多出来的镜像"></a>Dockerfile用build定制镜像时多出来的镜像</h1><blockquote>
+<p>写作时间:2020年8月4日</p>
+</blockquote>
+<blockquote>
+<p>问题描述：在dockerhub中找到continuumio/anaconda3镜像的Dockerfile，本地build该Dockerfile后，发现本地镜像中不止会有anaconda3的镜像，还有很多none镜像，包括一个基础镜像。但是如果用<code>docker pull continuumio/anaconda3:latest</code>，拉取到本地的镜像是一个独立的文件。</p>
+<p>前期思考：按照<strong>分层存储</strong>的概念，anaconda3镜像不应该是一个文件，而是以debian为基础镜像的多层文件联合组成。这样不将debian写死在anaconda3镜像中，有可能其他某个镜像也需要以debian为基础，那么该镜像和anaconda3可以共用debian（只需要一个debian），而如果将其写死，那么就需要两个debian，反而造成空间浪费。所以在本地build时，它不是一个独立的文件是好事。</p>
+<p>猜想：dockerhub中下载的镜像（由基础镜像定制而来）是个独立的镜像，其中包含了基础镜像。即：如果有imageA&amp;imageB，它们都由基础镜像image0构造而来，那么将imageA 和imageB pull到本地后，本地不会有image0,因为image0包含在imageA和imageB中。而如果用imageA和imageB的Dockerfile在本地定制镜像，那么本地会有基础镜像image0,且iamgeA和imageB中不包含image0,它们只是以image0为基础镜像所在的修改部分。</p>
+</blockquote>
+<h2 id="从dockerhub中pull-anaconda"><a href="#从dockerhub中pull-anaconda" class="headerlink" title="从dockerhub中pull anaconda"></a>从dockerhub中pull anaconda</h2><p><a target="_blank" rel="noopener" href="https://github.com/monkeydao/monkeydao.github.io/tree/master/img/dockerImage/">https://github.com/monkeydao/monkeydao.github.io/tree/master/img/dockerImage/</a></p>
+<ol>
+<li><p>如图，pull之前本地没有基础镜像debian：</p>
+<p><img src="https://github.com/monkeydao/monkeydao.github.io/tree/master/img/dockerImage/1.png" alt="pull前"></p>
+</li>
+<li><p>如图，pull之后，本地会多出anaconda3的镜像，但依然不会有debian的基础镜像。</p>
+<p><img src="image/dockerImage/2.png" alt="pull后"></p>
+</li>
+</ol>
+<h2 id="用Dockerfile在本地build-anaconda"><a href="#用Dockerfile在本地build-anaconda" class="headerlink" title="用Dockerfile在本地build anaconda"></a>用Dockerfile在本地build anaconda</h2><ol>
+<li><p>dockerhub中continuumio/anaconda3下的Dockerfile如下：</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> debian:latest</span><br><span class="line"></span><br><span class="line"><span class="comment">#  $ docker build . -t continuumio/anaconda3:latest -t continuumio/anaconda3:5.3.0</span></span><br><span class="line"><span class="comment">#  $ docker run --rm -it continuumio/anaconda3:latest /bin/bash</span></span><br><span class="line"><span class="comment">#  $ docker push continuumio/anaconda3:latest</span></span><br><span class="line"><span class="comment">#  $ docker push continuumio/anaconda3:5.3.0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">ENV</span> LANG=C.UTF-<span class="number">8</span> LC_ALL=C.UTF-<span class="number">8</span></span><br><span class="line"><span class="keyword">ENV</span> PATH /opt/conda/bin:$PATH</span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> apt-get update --fix-missing &amp;&amp; apt-get install -y wget bzip2 ca-certificates \</span></span><br><span class="line"><span class="bash">    libglib2.0-0 libxext6 libsm6 libxrender1 \</span></span><br><span class="line"><span class="bash">    git mercurial subversion</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> wget --quiet https://repo.anaconda.com/archive/Anaconda3-5.3.0-Linux-x86_64.sh -O ~/anaconda.sh &amp;&amp; \</span></span><br><span class="line"><span class="bash">    /bin/bash ~/anaconda.sh -b -p /opt/conda &amp;&amp; \</span></span><br><span class="line"><span class="bash">    rm ~/anaconda.sh &amp;&amp; \</span></span><br><span class="line"><span class="bash">    ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh &amp;&amp; \</span></span><br><span class="line"><span class="bash">    <span class="built_in">echo</span> <span class="string">&quot;. /opt/conda/etc/profile.d/conda.sh&quot;</span> &gt;&gt; ~/.bashrc &amp;&amp; \</span></span><br><span class="line"><span class="bash">    <span class="built_in">echo</span> <span class="string">&quot;conda activate base&quot;</span> &gt;&gt; ~/.bashrc</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> apt-get install -y curl grep sed dpkg &amp;&amp; \</span></span><br><span class="line"><span class="bash">    TINI_VERSION=`curl https://github.com/krallin/tini/releases/latest | grep -o <span class="string">&quot;/v.*\&quot;&quot;</span> | sed <span class="string">&#x27;s:^..\(.*\).$:\1:&#x27;</span>` &amp;&amp; \</span></span><br><span class="line"><span class="bash">    curl -L <span class="string">&quot;https://github.com/krallin/tini/releases/download/v<span class="variable">$&#123;TINI_VERSION&#125;</span>/tini_<span class="variable">$&#123;TINI_VERSION&#125;</span>.deb&quot;</span> &gt; tini.deb &amp;&amp; \</span></span><br><span class="line"><span class="bash">    dpkg -i tini.deb &amp;&amp; \</span></span><br><span class="line"><span class="bash">    rm tini.deb &amp;&amp; \</span></span><br><span class="line"><span class="bash">    apt-get clean</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">ENTRYPOINT</span><span class="bash"> [ <span class="string">&quot;/usr/bin/tini&quot;</span>, <span class="string">&quot;--&quot;</span> ]</span></span><br><span class="line"><span class="keyword">CMD</span><span class="bash"> [ <span class="string">&quot;/bin/bash&quot;</span> ]</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用命令<code>docker build -t anaconda:v1 .</code>基于此Dockerfile定制镜像anaconda:v1</p>
+<blockquote>
+<p>注：命令中最后的.代表的是Dokcerfile的上下文环境，在build时，Dockerfile文件所在目录中最好只有Dockerfile一个文件。</p>
+</blockquote>
+</li>
+<li><p>仔细观察build过程，分析如下：</p>
+<ul>
+<li><p>build过程一共有8 steps，与Dockerfile中8条命令对应</p>
+</li>
+<li><p>每一条Dockerfile命令build过程类似下图：</p>
+<p><img src="../image/dockerImage/3.png" alt="一条Dockerfile命令build过程"></p>
+<blockquote>
+<p>分析该过程，每一条Dockerfile在build时，会先暂时启动一个容器（Step 7/8：931c8429a5a5），执行所要求的命令，然后删除所用的执行命令的容器（Step 7/8：931c8429a5a5）。最后，提交了这一层（Step 7/8：329312b523c8）的镜像。</p>
+</blockquote>
+</li>
+<li><p>分析整个Dockerfile过程，从Step1–&gt;Step8，都与上述类似，提交的镜像ID分别为：</p>
+<table>
+<thead>
+<tr>
+<th>step1</th>
+<th>step2</th>
+<th>step3</th>
+<th>step4</th>
+<th>step5</th>
+<th>step6</th>
+<th>step7</th>
+<th>step8</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ae8514941ea4</td>
+<td>686a77000d5f</td>
+<td>b857a87109f5</td>
+<td>ac74bd014a59</td>
+<td>b227c1007167</td>
+<td>6a68df2daf0d</td>
+<td>329312b523c8</td>
+<td>cf4bb8f8044c</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>注：八步（8条Dockerfile命令）build基本过程一样，第八步之后另有两行如下图：</p>
+<p><img src="4.png" alt="第8步之后的输出"></p>
+<p>分析得知：Step 8/8提交的镜像  cf4bb8f8044c实际就是最终的anaconda:v1镜像。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p>build之后，查看docker中的镜像，如图：</p>
+<p><img src="5.png" alt="build后docker中的镜像"></p>
+<blockquote>
+<p><strong>思考结果：</strong>在所列出的镜像中，剔除原有的sonatype/nexus3, continuumio/anaconda3, ubuntu外，其他的镜像都是在本次build Dockerfile后生成的。</p>
+</blockquote>
+</li>
+</ol>
+<h2 id="分析与思考"><a href="#分析与思考" class="headerlink" title="分析与思考"></a>分析与思考</h2><h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><ol>
+<li><p>为什么build Dockerfile的8个步骤中，除了最终的anaconda3:v1镜像外，还生成了7个其他的镜像?</p>
+<blockquote>
+<p>查阅资料知：</p>
+<ul>
+<li>在定制镜像时，每一个Dockerfile命令都会建立一层，因为有8个Dockerfile命令，所以依次建立了8层镜像。</li>
+<li>且，docker镜像采用Union FS分层存储，它不是一个文件，而是由一组文件系统组成，或者说，由多层文件系统联合组成。镜像构建时，都是一层一层地构建，前一层是后一层的基础。故，此例中，<strong>定制的目标镜像anaconda:v1是由这8个镜像一起构成的</strong>，且第一步命令提交的镜像是第一层，第二步提交的镜像是第二曾，依次类推。可以从build后的docker中的镜像列表观察到，由上至下的镜像顺序，正好是Dockerfile中命令提交镜像顺序的逆序。</li>
+</ul>
+</blockquote>
+</li>
+<li><p>在8条Dockerfile提交的镜像中，为什么有6个镜像只有ID ，没有具体的REPOSITORY和TAG呢？</p>
+<blockquote>
+<ul>
+<li><p>之所以第一步提交的ae8514941ea4镜像有debian:latest，是因为第一个Dockerfile命令是FROM debian:latest，实际在build过程中是从dockerhub中pull debian:latest，如图：</p>
+<p><img src="6.png" alt="FROM debian:latest的执行结果"></p>
+</li>
+<li><p>之所以第八步提交的 cf4bb8f8044c镜像有anaconda:v1，是因为在build该Dockerfile时指定了tag为anaconda:v1，即最后的镜像就是anaconda:v1。从build过程最后两句”Successfully built cf4bb8f8044c”和”Successfully tagged anaconda3:v1”可知缘由。</p>
+</li>
+<li><p>之所以中间几步提交的镜像没有具体的REPOSITORY和TAG，是因为没有指定。</p>
+</li>
+</ul>
+</blockquote>
+</li>
+<li><p>那么，如果想将该anaconda:v1 push到dockerhub下的帐号中以供别人pull，应该怎么push？是只push anaconda3:v1呢，还是将其所依赖的其他7个镜像一并push?</p>
+<blockquote>
+<p>经实验，只需要push 所定制的目标镜像anaconda:v1即可，如下：</p>
+<ul>
+<li><p>首先，使用命令<code>docker tag anaconda3:v1 monkeytao/anaconda3:v1</code>将定制的镜像anaconda3:v1复制一份，仓库名前面加上dockerhub中的username。</p>
+</li>
+<li><p>其次，push 镜像至dockerhub，如图所示：</p>
+<p><img src="7.png" alt="push定制的镜像之dockerhub"></p>
+</li>
+<li><p>最后，在另外一台计算机上pull该镜像，能够顺利pull，如图所示:</p>
+<p><img src="8.png" alt="另外一台计算机上pull实验镜像"></p>
+</li>
+</ul>
+</blockquote>
+</li>
+</ol>
+<h3 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h3><ol>
+<li><p>在问题描述中<em>如果用<code>docker pull continuumio/anaconda3:latest</code>，拉取到本地的镜像是一个独立的文件。</em>，这句话是错误的，continuumio/anaconda3:latest镜像看起来是个独立的文件，其实在pull的过程中，会pull多层文件，而不是一个单独的文件，如图所示：</p>
+<p><img src="10.png" alt="pull镜像过程"></p>
+<blockquote>
+<p>注：从pull镜像的过程中可以看出分层存储的概念，镜像是由多层存储所构成。pull也是一层层地pull，整个过程会pull多个文件下来，并非pull单一文件。pull过程中给出了每一层的 ID 的前 12 位。并且下载结束后，给出该镜像完整的 <code>sha256</code> 的摘要，以确保下载一致性。</p>
+</blockquote>
+</li>
+<li><p>定制完镜像push时，只需要push目标镜像，不用管底层所依赖的镜像。在pull该定制镜像时，和其他官方镜像的pull过程一样。注意<em>分析</em>部分最后两张关于push和pull过程的图片，由对应图片前面的ID知，push和pull的对象不是一个单一的文件，而是一层一层的多层文件。</p>
+</li>
+</ol>
+<h2 id="收获"><a href="#收获" class="headerlink" title="收获"></a>收获</h2><ol>
+<li>对<strong>docker分层存储</strong>这一卓越的做法，理解地更加深刻了。镜像由多层存储所构成，不要再将镜像想成是一个单一的文件，而是多层文件，且下一层构建在上一层之上。</li>
+<li>人生苦短，多看官方文档！</li>
+<li>最后，本文第一段话是解决问题之前的思考，现在看来很不成熟，漏洞颇多。之所以不删，是因为将整个完整的思考始末写下来，而不是直接抛出个最终解决方案，这样有利于从头到尾去思考最终方案是怎么来的，中间遇到过什么问题，为什么最后会想到这样的方案。一来方便自己回首反思，二来方便读者了解始末。</li>
+</ol>
+<h2 id="遗留问题："><a href="#遗留问题：" class="headerlink" title="遗留问题："></a>遗留问题：</h2><ol>
+<li><p>在<code>docker push monkeytao/anaconda3:v1</code>之后，发现在自己帐号仓库中的镜像压缩大小为1.56G，但是continuumio/anaconda3:latest镜像大小仅为848.27MB，用的是同一份Dockerfile build的镜像，为什大小却不同呢？</p>
+</li>
+<li><p>在push定制的镜像时，因为镜像是多层存储所构成，所以push是一层层地在push，这一点可有push图片前面的镜像ID知道。但问题是，仔细对照push过程的镜像ID，发现没有哪一个ID是build过程提交的镜像ID，即在<code>docker image ls -a</code>的结果中，找不到这些镜像信息。那么这些镜像ID又究竟是怎么一回事呢？</p>
+</li>
+<li><p>在新机器上pull一个镜像后，通过<code>docker image ls -a</code>发现，在pull过程出现的几个镜像ID并未出现在本地的镜像列表中。那么同2问，这几个push过程中的镜像ID又是怎么回事呢？</p>
+<p><strong>猜测</strong>，可能push和pull过程中行头出现的ID并不是镜像的ID，而是其他什么ID。docker在push时，会自动将目标镜像所依赖的底层文件打包进仓库，而在pull时，又会自动释放这些底层文件。</p>
+</li>
+</ol>
+<p><strong>针对本文提出的认识，若有思考错误之处，恳请网友指正；若对遗留问题有所见解，欢迎与我交流，谢谢。联系方式:<a href="mailto:&#109;&#111;&#110;&#x6b;&#101;&#x79;&#x74;&#97;&#x6f;&#64;&#102;&#111;&#x78;&#x6d;&#x61;&#105;&#x6c;&#46;&#99;&#x6f;&#x6d;">&#109;&#111;&#110;&#x6b;&#101;&#x79;&#x74;&#97;&#x6f;&#64;&#102;&#111;&#x78;&#x6d;&#x61;&#105;&#x6c;&#46;&#99;&#x6f;&#x6d;</a></strong></p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/" rel="tag">docker</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+
+
+  
     <article id="post-docker搭建pytorch cuda版" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -290,6 +491,18 @@
     
       <input type="hidden" class="isFancy" />
     
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a  class="article-title" href="/1970/01/01/docker%E6%90%AD%E5%BB%BApytorch%20cuda%E7%89%88/">docker搭建pytorch cuda版</a>
+    </h1>
+  
+
+
+      </header>
+      
     
     <div class="article-entry" itemprop="articleBody">
       
@@ -353,6 +566,10 @@
       
 
       
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker-pytorch/" rel="tag">docker, pytorch</a></li></ul>
+    </div>
+
       
       <div class="clearfix"></div>
     </div>
@@ -595,206 +812,6 @@ update-grub
       
     <div class="article-tag tagcloud">
         <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ubuntu/" rel="tag">ubuntu</a></li></ul>
-    </div>
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-Dockerfile定制镜像" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a  href="/1970/01/01/Dockerfile%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F/" class="article-date">
-      <time datetime="1970-01-01T00:00:00.000Z" itemprop="datePublished">1970-01-01</time>
-</a>
-
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a  class="article-title" href="/1970/01/01/Dockerfile%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F/">Dockerfile用build定制镜像时多出来的镜像</a>
-    </h1>
-  
-
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-        <h1 id="Dockerfile用build定制镜像时多出来的镜像"><a href="#Dockerfile用build定制镜像时多出来的镜像" class="headerlink" title="Dockerfile用build定制镜像时多出来的镜像"></a>Dockerfile用build定制镜像时多出来的镜像</h1><blockquote>
-<p>写作时间:2020年8月4日</p>
-</blockquote>
-<blockquote>
-<p>问题描述：在dockerhub中找到continuumio/anaconda3镜像的Dockerfile，本地build该Dockerfile后，发现本地镜像中不止会有anaconda3的镜像，还有很多none镜像，包括一个基础镜像。但是如果用<code>docker pull continuumio/anaconda3:latest</code>，拉取到本地的镜像是一个独立的文件。</p>
-<p>前期思考：按照<strong>分层存储</strong>的概念，anaconda3镜像不应该是一个文件，而是以debian为基础镜像的多层文件联合组成。这样不将debian写死在anaconda3镜像中，有可能其他某个镜像也需要以debian为基础，那么该镜像和anaconda3可以共用debian（只需要一个debian），而如果将其写死，那么就需要两个debian，反而造成空间浪费。所以在本地build时，它不是一个独立的文件是好事。</p>
-<p>猜想：dockerhub中下载的镜像（由基础镜像定制而来）是个独立的镜像，其中包含了基础镜像。即：如果有imageA&amp;imageB，它们都由基础镜像image0构造而来，那么将imageA 和imageB pull到本地后，本地不会有image0,因为image0包含在imageA和imageB中。而如果用imageA和imageB的Dockerfile在本地定制镜像，那么本地会有基础镜像image0,且iamgeA和imageB中不包含image0,它们只是以image0为基础镜像所在的修改部分。</p>
-</blockquote>
-<h2 id="从dockerhub中pull-anaconda"><a href="#从dockerhub中pull-anaconda" class="headerlink" title="从dockerhub中pull anaconda"></a>从dockerhub中pull anaconda</h2><ol>
-<li><p>如图，pull之前本地没有基础镜像debian：</p>
-<p><img src="1.png" alt="pull前"></p>
-</li>
-<li><p>如图，pull之后，本地会多出anaconda3的镜像，但依然不会有debian的基础镜像。</p>
-<p><img src="2.png" alt="pull后"></p>
-</li>
-</ol>
-<h2 id="用Dockerfile在本地build-anaconda"><a href="#用Dockerfile在本地build-anaconda" class="headerlink" title="用Dockerfile在本地build anaconda"></a>用Dockerfile在本地build anaconda</h2><ol>
-<li><p>dockerhub中continuumio/anaconda3下的Dockerfile如下：</p>
-<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> debian:latest</span><br><span class="line"></span><br><span class="line"><span class="comment">#  $ docker build . -t continuumio/anaconda3:latest -t continuumio/anaconda3:5.3.0</span></span><br><span class="line"><span class="comment">#  $ docker run --rm -it continuumio/anaconda3:latest /bin/bash</span></span><br><span class="line"><span class="comment">#  $ docker push continuumio/anaconda3:latest</span></span><br><span class="line"><span class="comment">#  $ docker push continuumio/anaconda3:5.3.0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">ENV</span> LANG=C.UTF-<span class="number">8</span> LC_ALL=C.UTF-<span class="number">8</span></span><br><span class="line"><span class="keyword">ENV</span> PATH /opt/conda/bin:$PATH</span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> apt-get update --fix-missing &amp;&amp; apt-get install -y wget bzip2 ca-certificates \</span></span><br><span class="line"><span class="bash">    libglib2.0-0 libxext6 libsm6 libxrender1 \</span></span><br><span class="line"><span class="bash">    git mercurial subversion</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> wget --quiet https://repo.anaconda.com/archive/Anaconda3-5.3.0-Linux-x86_64.sh -O ~/anaconda.sh &amp;&amp; \</span></span><br><span class="line"><span class="bash">    /bin/bash ~/anaconda.sh -b -p /opt/conda &amp;&amp; \</span></span><br><span class="line"><span class="bash">    rm ~/anaconda.sh &amp;&amp; \</span></span><br><span class="line"><span class="bash">    ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh &amp;&amp; \</span></span><br><span class="line"><span class="bash">    <span class="built_in">echo</span> <span class="string">&quot;. /opt/conda/etc/profile.d/conda.sh&quot;</span> &gt;&gt; ~/.bashrc &amp;&amp; \</span></span><br><span class="line"><span class="bash">    <span class="built_in">echo</span> <span class="string">&quot;conda activate base&quot;</span> &gt;&gt; ~/.bashrc</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> apt-get install -y curl grep sed dpkg &amp;&amp; \</span></span><br><span class="line"><span class="bash">    TINI_VERSION=`curl https://github.com/krallin/tini/releases/latest | grep -o <span class="string">&quot;/v.*\&quot;&quot;</span> | sed <span class="string">&#x27;s:^..\(.*\).$:\1:&#x27;</span>` &amp;&amp; \</span></span><br><span class="line"><span class="bash">    curl -L <span class="string">&quot;https://github.com/krallin/tini/releases/download/v<span class="variable">$&#123;TINI_VERSION&#125;</span>/tini_<span class="variable">$&#123;TINI_VERSION&#125;</span>.deb&quot;</span> &gt; tini.deb &amp;&amp; \</span></span><br><span class="line"><span class="bash">    dpkg -i tini.deb &amp;&amp; \</span></span><br><span class="line"><span class="bash">    rm tini.deb &amp;&amp; \</span></span><br><span class="line"><span class="bash">    apt-get clean</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">ENTRYPOINT</span><span class="bash"> [ <span class="string">&quot;/usr/bin/tini&quot;</span>, <span class="string">&quot;--&quot;</span> ]</span></span><br><span class="line"><span class="keyword">CMD</span><span class="bash"> [ <span class="string">&quot;/bin/bash&quot;</span> ]</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>使用命令<code>docker build -t anaconda:v1 .</code>基于此Dockerfile定制镜像anaconda:v1</p>
-<blockquote>
-<p>注：命令中最后的.代表的是Dokcerfile的上下文环境，在build时，Dockerfile文件所在目录中最好只有Dockerfile一个文件。</p>
-</blockquote>
-</li>
-<li><p>仔细观察build过程，分析如下：</p>
-<ul>
-<li><p>build过程一共有8 steps，与Dockerfile中8条命令对应</p>
-</li>
-<li><p>每一条Dockerfile命令build过程类似下图：</p>
-<p><img src="3.png" alt="一条Dockerfile命令build过程"></p>
-<blockquote>
-<p>分析该过程，每一条Dockerfile在build时，会先暂时启动一个容器（Step 7/8：931c8429a5a5），执行所要求的命令，然后删除所用的执行命令的容器（Step 7/8：931c8429a5a5）。最后，提交了这一层（Step 7/8：329312b523c8）的镜像。</p>
-</blockquote>
-</li>
-<li><p>分析整个Dockerfile过程，从Step1–&gt;Step8，都与上述类似，提交的镜像ID分别为：</p>
-<table>
-<thead>
-<tr>
-<th>step1</th>
-<th>step2</th>
-<th>step3</th>
-<th>step4</th>
-<th>step5</th>
-<th>step6</th>
-<th>step7</th>
-<th>step8</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>ae8514941ea4</td>
-<td>686a77000d5f</td>
-<td>b857a87109f5</td>
-<td>ac74bd014a59</td>
-<td>b227c1007167</td>
-<td>6a68df2daf0d</td>
-<td>329312b523c8</td>
-<td>cf4bb8f8044c</td>
-</tr>
-</tbody></table>
-<blockquote>
-<p>注：八步（8条Dockerfile命令）build基本过程一样，第八步之后另有两行如下图：</p>
-<p><img src="4.png" alt="第8步之后的输出"></p>
-<p>分析得知：Step 8/8提交的镜像  cf4bb8f8044c实际就是最终的anaconda:v1镜像。</p>
-</blockquote>
-</li>
-</ul>
-</li>
-<li><p>build之后，查看docker中的镜像，如图：</p>
-<p><img src="5.png" alt="build后docker中的镜像"></p>
-<blockquote>
-<p><strong>思考结果：</strong>在所列出的镜像中，剔除原有的sonatype/nexus3, continuumio/anaconda3, ubuntu外，其他的镜像都是在本次build Dockerfile后生成的。</p>
-</blockquote>
-</li>
-</ol>
-<h2 id="分析与思考"><a href="#分析与思考" class="headerlink" title="分析与思考"></a>分析与思考</h2><h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><ol>
-<li><p>为什么build Dockerfile的8个步骤中，除了最终的anaconda3:v1镜像外，还生成了7个其他的镜像?</p>
-<blockquote>
-<p>查阅资料知：</p>
-<ul>
-<li>在定制镜像时，每一个Dockerfile命令都会建立一层，因为有8个Dockerfile命令，所以依次建立了8层镜像。</li>
-<li>且，docker镜像采用Union FS分层存储，它不是一个文件，而是由一组文件系统组成，或者说，由多层文件系统联合组成。镜像构建时，都是一层一层地构建，前一层是后一层的基础。故，此例中，<strong>定制的目标镜像anaconda:v1是由这8个镜像一起构成的</strong>，且第一步命令提交的镜像是第一层，第二步提交的镜像是第二曾，依次类推。可以从build后的docker中的镜像列表观察到，由上至下的镜像顺序，正好是Dockerfile中命令提交镜像顺序的逆序。</li>
-</ul>
-</blockquote>
-</li>
-<li><p>在8条Dockerfile提交的镜像中，为什么有6个镜像只有ID ，没有具体的REPOSITORY和TAG呢？</p>
-<blockquote>
-<ul>
-<li><p>之所以第一步提交的ae8514941ea4镜像有debian:latest，是因为第一个Dockerfile命令是FROM debian:latest，实际在build过程中是从dockerhub中pull debian:latest，如图：</p>
-<p><img src="6.png" alt="FROM debian:latest的执行结果"></p>
-</li>
-<li><p>之所以第八步提交的 cf4bb8f8044c镜像有anaconda:v1，是因为在build该Dockerfile时指定了tag为anaconda:v1，即最后的镜像就是anaconda:v1。从build过程最后两句”Successfully built cf4bb8f8044c”和”Successfully tagged anaconda3:v1”可知缘由。</p>
-</li>
-<li><p>之所以中间几步提交的镜像没有具体的REPOSITORY和TAG，是因为没有指定。</p>
-</li>
-</ul>
-</blockquote>
-</li>
-<li><p>那么，如果想将该anaconda:v1 push到dockerhub下的帐号中以供别人pull，应该怎么push？是只push anaconda3:v1呢，还是将其所依赖的其他7个镜像一并push?</p>
-<blockquote>
-<p>经实验，只需要push 所定制的目标镜像anaconda:v1即可，如下：</p>
-<ul>
-<li><p>首先，使用命令<code>docker tag anaconda3:v1 monkeytao/anaconda3:v1</code>将定制的镜像anaconda3:v1复制一份，仓库名前面加上dockerhub中的username。</p>
-</li>
-<li><p>其次，push 镜像至dockerhub，如图所示：</p>
-<p><img src="7.png" alt="push定制的镜像之dockerhub"></p>
-</li>
-<li><p>最后，在另外一台计算机上pull该镜像，能够顺利pull，如图所示:</p>
-<p><img src="8.png" alt="另外一台计算机上pull实验镜像"></p>
-</li>
-</ul>
-</blockquote>
-</li>
-</ol>
-<h3 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h3><ol>
-<li><p>在问题描述中<em>如果用<code>docker pull continuumio/anaconda3:latest</code>，拉取到本地的镜像是一个独立的文件。</em>，这句话是错误的，continuumio/anaconda3:latest镜像看起来是个独立的文件，其实在pull的过程中，会pull多层文件，而不是一个单独的文件，如图所示：</p>
-<p><img src="10.png" alt="pull镜像过程"></p>
-<blockquote>
-<p>注：从pull镜像的过程中可以看出分层存储的概念，镜像是由多层存储所构成。pull也是一层层地pull，整个过程会pull多个文件下来，并非pull单一文件。pull过程中给出了每一层的 ID 的前 12 位。并且下载结束后，给出该镜像完整的 <code>sha256</code> 的摘要，以确保下载一致性。</p>
-</blockquote>
-</li>
-<li><p>定制完镜像push时，只需要push目标镜像，不用管底层所依赖的镜像。在pull该定制镜像时，和其他官方镜像的pull过程一样。注意<em>分析</em>部分最后两张关于push和pull过程的图片，由对应图片前面的ID知，push和pull的对象不是一个单一的文件，而是一层一层的多层文件。</p>
-</li>
-</ol>
-<h2 id="收获"><a href="#收获" class="headerlink" title="收获"></a>收获</h2><ol>
-<li>对<strong>docker分层存储</strong>这一卓越的做法，理解地更加深刻了。镜像由多层存储所构成，不要再将镜像想成是一个单一的文件，而是多层文件，且下一层构建在上一层之上。</li>
-<li>人生苦短，多看官方文档！</li>
-<li>最后，本文第一段话是解决问题之前的思考，现在看来很不成熟，漏洞颇多。之所以不删，是因为将整个完整的思考始末写下来，而不是直接抛出个最终解决方案，这样有利于从头到尾去思考最终方案是怎么来的，中间遇到过什么问题，为什么最后会想到这样的方案。一来方便自己回首反思，二来方便读者了解始末。</li>
-</ol>
-<h2 id="遗留问题："><a href="#遗留问题：" class="headerlink" title="遗留问题："></a>遗留问题：</h2><ol>
-<li><p>在<code>docker push monkeytao/anaconda3:v1</code>之后，发现在自己帐号仓库中的镜像压缩大小为1.56G，但是continuumio/anaconda3:latest镜像大小仅为848.27MB，用的是同一份Dockerfile build的镜像，为什大小却不同呢？</p>
-</li>
-<li><p>在push定制的镜像时，因为镜像是多层存储所构成，所以push是一层层地在push，这一点可有push图片前面的镜像ID知道。但问题是，仔细对照push过程的镜像ID，发现没有哪一个ID是build过程提交的镜像ID，即在<code>docker image ls -a</code>的结果中，找不到这些镜像信息。那么这些镜像ID又究竟是怎么一回事呢？</p>
-</li>
-<li><p>在新机器上pull一个镜像后，通过<code>docker image ls -a</code>发现，在pull过程出现的几个镜像ID并未出现在本地的镜像列表中。那么同2问，这几个push过程中的镜像ID又是怎么回事呢？</p>
-<p><strong>猜测</strong>，可能push和pull过程中行头出现的ID并不是镜像的ID，而是其他什么ID。docker在push时，会自动将目标镜像所依赖的底层文件打包进仓库，而在pull时，又会自动释放这些底层文件。</p>
-</li>
-</ol>
-<p><strong>针对本文提出的认识，若有思考错误之处，恳请网友指正；若对遗留问题有所见解，欢迎与我交流，谢谢。联系方式:<a href="mailto:&#x6d;&#111;&#x6e;&#107;&#x65;&#121;&#116;&#97;&#111;&#x40;&#102;&#x6f;&#x78;&#x6d;&#x61;&#x69;&#x6c;&#46;&#99;&#x6f;&#x6d;">&#x6d;&#111;&#x6e;&#107;&#x65;&#121;&#116;&#97;&#111;&#x40;&#102;&#x6f;&#x78;&#x6d;&#x61;&#x69;&#x6c;&#46;&#99;&#x6f;&#x6d;</a></strong></p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/" rel="tag">docker</a></li></ul>
     </div>
 
       
