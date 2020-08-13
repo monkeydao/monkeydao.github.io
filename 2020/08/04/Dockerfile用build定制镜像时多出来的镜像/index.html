@@ -16,21 +16,21 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="Dockerfile用build定制镜像时多出来的镜像 写作时间:2020年8月4日   问题描述：在dockerhub中找到continuumio&#x2F;anaconda3镜像的Dockerfile，本地build该Dockerfile后，发现本地镜像中不止会有anaconda3的镜像，还有很多none镜像，包括一个基础镜像。但是如果用docker pull continuumio&#x2F;anaconda3">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://yoursite.com/.com//1.png">
-<meta property="og:image" content="http://yoursite.com/.com//2.png">
-<meta property="og:image" content="http://yoursite.com/.com//3.png">
-<meta property="og:image" content="http://yoursite.com/.com//4.png">
-<meta property="og:image" content="http://yoursite.com/.com//5.png">
-<meta property="og:image" content="http://yoursite.com/.com//6.png">
-<meta property="og:image" content="http://yoursite.com/.com//7.png">
-<meta property="og:image" content="http://yoursite.com/.com//8.png">
-<meta property="og:image" content="http://yoursite.com/.com//10.png">
+<meta property="og:image" content="http://yoursite.com/2020/08/04/Dockerfile%E7%94%A8build%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F%E6%97%B6%E5%A4%9A%E5%87%BA%E6%9D%A5%E7%9A%84%E9%95%9C%E5%83%8F/Dockerfile%E7%94%A8build%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F%E6%97%B6%E5%A4%9A%E5%87%BA%E6%9D%A5%E7%9A%84%E9%95%9C%E5%83%8F/1.png">
+<meta property="og:image" content="http://yoursite.com/2020/08/04/Dockerfile%E7%94%A8build%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F%E6%97%B6%E5%A4%9A%E5%87%BA%E6%9D%A5%E7%9A%84%E9%95%9C%E5%83%8F/Dockerfile%E7%94%A8build%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F%E6%97%B6%E5%A4%9A%E5%87%BA%E6%9D%A5%E7%9A%84%E9%95%9C%E5%83%8F/2.png">
+<meta property="og:image" content="http://yoursite.com/2020/08/04/Dockerfile%E7%94%A8build%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F%E6%97%B6%E5%A4%9A%E5%87%BA%E6%9D%A5%E7%9A%84%E9%95%9C%E5%83%8F/3.png">
+<meta property="og:image" content="http://yoursite.com/2020/08/04/Dockerfile%E7%94%A8build%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F%E6%97%B6%E5%A4%9A%E5%87%BA%E6%9D%A5%E7%9A%84%E9%95%9C%E5%83%8F/4.png">
+<meta property="og:image" content="http://yoursite.com/2020/08/04/Dockerfile%E7%94%A8build%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F%E6%97%B6%E5%A4%9A%E5%87%BA%E6%9D%A5%E7%9A%84%E9%95%9C%E5%83%8F/5.png">
+<meta property="og:image" content="http://yoursite.com/2020/08/04/Dockerfile%E7%94%A8build%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F%E6%97%B6%E5%A4%9A%E5%87%BA%E6%9D%A5%E7%9A%84%E9%95%9C%E5%83%8F/6.png">
+<meta property="og:image" content="http://yoursite.com/2020/08/04/Dockerfile%E7%94%A8build%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F%E6%97%B6%E5%A4%9A%E5%87%BA%E6%9D%A5%E7%9A%84%E9%95%9C%E5%83%8F/7.png">
+<meta property="og:image" content="http://yoursite.com/2020/08/04/Dockerfile%E7%94%A8build%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F%E6%97%B6%E5%A4%9A%E5%87%BA%E6%9D%A5%E7%9A%84%E9%95%9C%E5%83%8F/8.png">
+<meta property="og:image" content="http://yoursite.com/2020/08/04/Dockerfile%E7%94%A8build%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F%E6%97%B6%E5%A4%9A%E5%87%BA%E6%9D%A5%E7%9A%84%E9%95%9C%E5%83%8F/10.png">
 <meta property="article:published_time" content="2020-08-04T03:29:43.000Z">
 <meta property="article:modified_time" content="2020-08-13T03:37:00.176Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="docker">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://yoursite.com/.com//1.png">
+<meta name="twitter:image" content="http://yoursite.com/2020/08/04/Dockerfile%E7%94%A8build%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F%E6%97%B6%E5%A4%9A%E5%87%BA%E6%9D%A5%E7%9A%84%E9%95%9C%E5%83%8F/Dockerfile%E7%94%A8build%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F%E6%97%B6%E5%A4%9A%E5%87%BA%E6%9D%A5%E7%9A%84%E9%95%9C%E5%83%8F/1.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -337,10 +337,10 @@
 </blockquote>
 <h2 id="从dockerhub中pull-anaconda"><a href="#从dockerhub中pull-anaconda" class="headerlink" title="从dockerhub中pull anaconda"></a>从dockerhub中pull anaconda</h2><ol>
 <li><p>如图，pull之前本地没有基础镜像debian：</p>
-<p><img src="/.com//1.png" alt="pull前"></p>
+<p><img src="Dockerfile%E7%94%A8build%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F%E6%97%B6%E5%A4%9A%E5%87%BA%E6%9D%A5%E7%9A%84%E9%95%9C%E5%83%8F/1.png" alt="pull前"></p>
 </li>
 <li><p>如图，pull之后，本地会多出anaconda3的镜像，但依然不会有debian的基础镜像。</p>
-<p><img src="/.com//2.png" alt="pull后"></p>
+<p><img src="Dockerfile%E7%94%A8build%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F%E6%97%B6%E5%A4%9A%E5%87%BA%E6%9D%A5%E7%9A%84%E9%95%9C%E5%83%8F/2.png" alt="pull后"></p>
 </li>
 </ol>
 <h2 id="用Dockerfile在本地build-anaconda"><a href="#用Dockerfile在本地build-anaconda" class="headerlink" title="用Dockerfile在本地build anaconda"></a>用Dockerfile在本地build anaconda</h2><ol>
@@ -357,7 +357,7 @@
 <li><p>build过程一共有8 steps，与Dockerfile中8条命令对应</p>
 </li>
 <li><p>每一条Dockerfile命令build过程类似下图：</p>
-<p><img src="/.com//3.png" alt="一条Dockerfile命令build过程"></p>
+<p><img src="3.png" alt="一条Dockerfile命令build过程"></p>
 <blockquote>
 <p>分析该过程，每一条Dockerfile在build时，会先暂时启动一个容器（Step 7/8：931c8429a5a5），执行所要求的命令，然后删除所用的执行命令的容器（Step 7/8：931c8429a5a5）。最后，提交了这一层（Step 7/8：329312b523c8）的镜像。</p>
 </blockquote>
@@ -389,14 +389,14 @@
 </tbody></table>
 <blockquote>
 <p>注：八步（8条Dockerfile命令）build基本过程一样，第八步之后另有两行如下图：</p>
-<p><img src="/.com//4.png" alt="第8步之后的输出"></p>
+<p><img src="4.png" alt="第8步之后的输出"></p>
 <p>分析得知：Step 8/8提交的镜像  cf4bb8f8044c实际就是最终的anaconda:v1镜像。</p>
 </blockquote>
 </li>
 </ul>
 </li>
 <li><p>build之后，查看docker中的镜像，如图：</p>
-<p><img src="/.com//5.png" alt="build后docker中的镜像"></p>
+<p><img src="5.png" alt="build后docker中的镜像"></p>
 <blockquote>
 <p><strong>思考结果：</strong>在所列出的镜像中，剔除原有的sonatype/nexus3, continuumio/anaconda3, ubuntu外，其他的镜像都是在本次build Dockerfile后生成的。</p>
 </blockquote>
@@ -416,7 +416,7 @@
 <blockquote>
 <ul>
 <li><p>之所以第一步提交的ae8514941ea4镜像有debian:latest，是因为第一个Dockerfile命令是FROM debian:latest，实际在build过程中是从dockerhub中pull debian:latest，如图：</p>
-<p><img src="/.com//6.png" alt="FROM debian:latest的执行结果"></p>
+<p><img src="6.png" alt="FROM debian:latest的执行结果"></p>
 </li>
 <li><p>之所以第八步提交的 cf4bb8f8044c镜像有anaconda:v1，是因为在build该Dockerfile时指定了tag为anaconda:v1，即最后的镜像就是anaconda:v1。从build过程最后两句”Successfully built cf4bb8f8044c”和”Successfully tagged anaconda3:v1”可知缘由。</p>
 </li>
@@ -432,10 +432,10 @@
 <li><p>首先，使用命令<code>docker tag anaconda3:v1 monkeytao/anaconda3:v1</code>将定制的镜像anaconda3:v1复制一份，仓库名前面加上dockerhub中的username。</p>
 </li>
 <li><p>其次，push 镜像至dockerhub，如图所示：</p>
-<p><img src="/.com//7.png" alt="push定制的镜像之dockerhub"></p>
+<p><img src="7.png" alt="push定制的镜像之dockerhub"></p>
 </li>
 <li><p>最后，在另外一台计算机上pull该镜像，能够顺利pull，如图所示:</p>
-<p><img src="/.com//8.png" alt="另外一台计算机上pull实验镜像"></p>
+<p><img src="8.png" alt="另外一台计算机上pull实验镜像"></p>
 </li>
 </ul>
 </blockquote>
@@ -443,7 +443,7 @@
 </ol>
 <h3 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h3><ol>
 <li><p>在问题描述中<em>如果用<code>docker pull continuumio/anaconda3:latest</code>，拉取到本地的镜像是一个独立的文件。</em>，这句话是错误的，continuumio/anaconda3:latest镜像看起来是个独立的文件，其实在pull的过程中，会pull多层文件，而不是一个单独的文件，如图所示：</p>
-<p><img src="/.com//10.png" alt="pull镜像过程"></p>
+<p><img src="10.png" alt="pull镜像过程"></p>
 <blockquote>
 <p>注：从pull镜像的过程中可以看出分层存储的概念，镜像是由多层存储所构成。pull也是一层层地pull，整个过程会pull多个文件下来，并非pull单一文件。pull过程中给出了每一层的 ID 的前 12 位。并且下载结束后，给出该镜像完整的 <code>sha256</code> 的摘要，以确保下载一致性。</p>
 </blockquote>
@@ -465,7 +465,7 @@
 <p><strong>猜测</strong>，可能push和pull过程中行头出现的ID并不是镜像的ID，而是其他什么ID。docker在push时，会自动将目标镜像所依赖的底层文件打包进仓库，而在pull时，又会自动释放这些底层文件。</p>
 </li>
 </ol>
-<p><strong>针对本文提出的认识，若有思考错误之处，恳请网友指正；若对遗留问题有所见解，欢迎与我交流，谢谢。联系方式:<a href="mailto:&#109;&#111;&#110;&#107;&#101;&#x79;&#116;&#x61;&#111;&#64;&#102;&#111;&#x78;&#x6d;&#97;&#x69;&#x6c;&#x2e;&#x63;&#x6f;&#109;">&#109;&#111;&#110;&#107;&#101;&#x79;&#116;&#x61;&#111;&#64;&#102;&#111;&#x78;&#x6d;&#97;&#x69;&#x6c;&#x2e;&#x63;&#x6f;&#109;</a></strong></p>
+<p><strong>针对本文提出的认识，若有思考错误之处，恳请网友指正；若对遗留问题有所见解，欢迎与我交流，谢谢。联系方式:<a href="mailto:&#x6d;&#x6f;&#x6e;&#107;&#x65;&#121;&#116;&#x61;&#111;&#64;&#x66;&#111;&#120;&#x6d;&#97;&#105;&#x6c;&#46;&#99;&#x6f;&#x6d;">&#x6d;&#x6f;&#x6e;&#107;&#x65;&#121;&#116;&#x61;&#111;&#64;&#x66;&#111;&#120;&#x6d;&#97;&#105;&#x6c;&#46;&#99;&#x6f;&#x6d;</a></strong></p>
 
       
     </div>
